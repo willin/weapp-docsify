@@ -6,6 +6,7 @@ plugins:
 env:
   browser: true
 rules:
+  no-trailing-spaces: 2
   class-methods-use-this: 0
   import/extensions:
     js: always

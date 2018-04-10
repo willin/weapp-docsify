@@ -1,24 +1,152 @@
 <template>
-  <view class="container">
-    <div>test</div>
+<div>
+  <view class="mpage {{!ui.tStart? 'withAnimate': ''}}" style="left:{{ui.offsetLeft}}px;width: {{ui.windowWidth}}px" bindtouchstart="handlerStart" catchtouchmove="handlerMove" bindtouchend="handlerEnd" bindtap="handlerPageTap">
+    <scroll-view bindscroll="handlerScroll" scroll-y style="height: 100%;">
+      test content
+    </scroll-view>
   </view>
+  <view bindtouchstart="handlerStart" catchtouchmove="handlerMove" bindtouchend="handlerEnd" style="width: {{ui.menuWidth}}px">
+    <view style="width: {{ui.menuWidth}}px;left:{{-ui.menuWidth/3 + ui.offsetLeft/3}}px" class="{{!ui.tStart? 'withAnimate': ''}}">
+      test menu
+    </view>
+  </view>
+</div>
 </template>
 
 <script>
-  import wepy from 'wepy';
+import wepy from 'wepy';
+import api from '../utils/request';
 
-  export default class Index extends wepy.page {
-    config = {
-      navigationBarTitleText: '团队领袖'
-    }
+const MENU_WIDTH_SCALE = 0.82;
+const FAST_SPEED_SECOND = 300;
+const FAST_SPEED_DISTANCE = 5;
+const FAST_SPEED_EFF_Y = 50;
 
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '团队领袖'
+  }
 
-    onLoad() {
-
+  data={
+    ui: {
+      windowWidth: 0,
+      menuWidth: 0,
+      offsetLeft: 0,
+      tStart: true
     }
   }
+
+  onLoad() {
+    try {
+      const res = wx.getSystemInfoSync();
+      this.windowWidth = res.windowWidth;
+      this.data.ui.menuWidth = this.windowWidth * MENU_WIDTH_SCALE;
+      this.data.ui.offsetLeft = 0;
+      this.data.ui.windowWidth = res.windowWidth;
+      this.$apply();
+    } catch (e) {
+      // eslint-disable-next-line no-empty
+    }
+  }
+
+  handlerStart(e) {
+    const { clientX, clientY } = e.touches[0];
+    this.tapStartX = clientX;
+    this.tapStartY = clientY;
+    this.tapStartTime = e.timeStamp;
+    this.startX = clientX;
+    this.data.ui.tStart = true;
+    this.$apply();
+  }
+
+  handlerMove(e) {
+    const { clientX } = e.touches[0];
+    const offsetX = this.startX - clientX;
+    this.startX = clientX;
+    this.data.ui.offsetLeft -= offsetX;
+    if (this.data.ui.offsetLeft <= 0) {
+      this.data.ui.offsetLeft = 0;
+    } else if (this.data.ui.offsetLeft >= this.data.ui.menuWidth) {
+      this.data.ui.offsetLeft = this.data.ui.menuWidth;
+    }
+    this.$apply();
+  }
+
+  handlerEnd(e) {
+    this.data.ui.tStart = false;
+    this.$apply();
+    const { clientX, clientY } = e.changedTouches[0];
+    const endTime = e.timeStamp;
+    // 快速滑动
+    if (endTime - this.tapStartTime <= FAST_SPEED_SECOND) {
+      // 向左
+      if (this.tapStartX - clientX > FAST_SPEED_DISTANCE) {
+        this.data.ui.offsetLeft = 0;
+      } else if (this.tapStartX - clientX < -FAST_SPEED_DISTANCE && Math.abs(this.tapStartY - clientY) < FAST_SPEED_EFF_Y) {
+        this.data.ui.offsetLeft = this.data.ui.menuWidth;
+      } else if (this.data.ui.offsetLeft >= this.data.ui.menuWidth / 2) {
+        this.data.ui.offsetLeft = this.data.ui.menuWidth;
+      } else {
+        this.data.ui.offsetLeft = 0;
+      }
+    } else if (this.data.ui.offsetLeft >= this.data.ui.menuWidth / 2) {
+      this.data.ui.offsetLeft = this.data.ui.menuWidth;
+    } else {
+      this.data.ui.offsetLeft = 0;
+    }
+    this.$apply();
+  }
+
+  handlerPageTap() {
+    if (this.data.ui.offsetLeft !== 0) {
+      this.data.ui.offsetLeft = 0;
+      this.$apply();
+    }
+  }
+  handlerAvatarTap() {
+    if (this.data.ui.offsetLeft === 0) {
+      this.data.ui.offsetLeft = this.data.ui.menuWidth;
+      this.$apply();
+    }
+  }
+}
 </script>
 
 <style lang="stylus">
+.mpage
+  z-index: 10;
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  background-color: #fff;
 
+.withAnimate
+  transition: all 300ms ease;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  perspective: 1000;
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #e7eaef;
+  border-right: 1px solid #dbdbdb;
+  box-sizing: border-box;
+}
+
+.sidebar > div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: cadetblue;
+}
 </style>
