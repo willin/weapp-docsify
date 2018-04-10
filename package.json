@@ -1,0 +1,12 @@
+{
+  "name": "weapp-docsify",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:willin/weapp-docsify.git",
+  "author": "Willin Wang <willin@willin.org>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-dwing": "^1.2.0"
+  }
+}
