@@ -1,7 +1,21 @@
 root: true
 extends: dwing
+parser: babel-eslint
+plugins:
+  - html
+env:
+  browser: true
+rules:
+  class-methods-use-this: 0
+  import/extensions:
+    js: always
+    wpy: always
 globals:
   wx: true
   getApp: true
   App: true
   Page: true
+settings:
+  html/html-extensions:
+    - .html
+    - .wpy

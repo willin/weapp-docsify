@@ -1,13 +1,14 @@
 {
-	"description": "项目配置文件。",
+	"description": "《不可替代的团队领袖培养计划》leader.js.cool",
 	"setting": {
 		"urlCheck": true,
-		"es6": true,
-		"postcss": true,
-		"minified": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
 		"newFeature": true
 	},
-	"compileType": "miniprogram",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./dist",
 	"libVersion": "1.9.94",
 	"appid": "wx89cc79a50de77a9a",
 	"projectname": "%E5%9B%A2%E9%98%9F%E9%A2%86%E8%A2%96%E8%AE%A1%E5%88%92",

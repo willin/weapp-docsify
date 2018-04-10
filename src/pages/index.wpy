@@ -1,0 +1,23 @@
+<style lang="stylus">
+
+</style>
+<template>
+  <view class="container">
+    <div>test</div>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '团队领袖'
+    }
+
+
+    onLoad() {
+
+    }
+  }
+</script>
