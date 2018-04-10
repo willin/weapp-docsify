@@ -12,9 +12,12 @@
 # 更换成你的 Git 项目路径
 git clone git@github.com:willin/weapp-docsify.git
 cd weapp-docsify
+# 安装依赖
+yarn global add wepy-cli
 yarn
 yarn dev
 # 或者
+npm i -g wepy-cli
 npm i
 npm run dev
 ```
